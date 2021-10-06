@@ -1,7 +1,9 @@
 package study.datajpa.repository;
 
+import org.hibernate.annotations.Entity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +19,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findTop3HelloBy();
 
-//    @Query(name = "Member.findByUsername") //생략가능
+    //    @Query(name = "Member.findByUsername") //생략가능
     List<Member> findByUsername(@Param("username") String username);
 
     @Query("select m from Member m where m.username = :username and m.age = :age")
@@ -34,7 +36,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     List<Member> findByNames(@Param("names") List<String> names);
 
     List<Member> findListByUsername(String username);   //컬렉션
+
     Member findMemberByUsername(String username);       //단건
+
     Optional<Member> findOptionalByUsername(String username); //단건 Optional
 
     //카운트 쿼리 분리하기
@@ -43,8 +47,24 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Page<Member> findByAge(int age, Pageable pageable);
 
     //어떤 리스트를 update쳐할때 JPA에서는 그 update문을 벌크성 update문 이라고 부른다.
-    @Modifying(clearAutomatically = true)  //@Modifying을 써야 executeUpdate()를 실행한다 // 옵션으로 clearAutomatically = true를 줘야 이 벌크성 연산이 나간뒤에 영속성 컨텍스트를 자동으로 초기화 시킨다.
+    @Modifying(clearAutomatically = true)
+    //@Modifying을 써야 executeUpdate()를 실행한다 // 옵션으로 clearAutomatically = true를 줘야 이 벌크성 연산이 나간뒤에 영속성 컨텍스트를 자동으로 초기화 시킨다.
     @Query("update Member m set m.age = m.age + 1 where m.age >= :age")
     int bulkAgePlus(@Param("age") int age);
+
+    @Query("select m from Member m left join fetch m.team")
+    List<Member> findMemberFetchJoin();
+
+    @Override
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findAll();
+
+    @EntityGraph(attributePaths = {"team"})
+    @Query("select m from Member m")
+    List<Member> findMemberEntityGraph();
+
+    @EntityGraph(attributePaths = {"team"})
+    List<Member> findEntityGraphByUsername(@Param("username") String username);
+
 
 }
