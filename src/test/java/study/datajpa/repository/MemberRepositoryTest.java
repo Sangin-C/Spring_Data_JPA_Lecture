@@ -270,4 +270,37 @@ public class MemberRepositoryTest {
 
     }
 
+    @Test
+    public void queryHint() {
+
+        //given
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        //보통 트랜잭션 커밋시점에 flush가 되는데, 강제로 영속성 컨텍스트에 있는 값들을 flush시킬 수 있다.
+        em.flush();
+        //영속성 컨텍스트에 있는 값들을 모두 날린다.
+        em.clear();
+
+        //then
+        Member findMember = memberRepository.findReadOnlyByUsername("member1"); //스냅샷을 만들지 않는다. 읽기 전용으로만 사용한다.
+        findMember.setUsername("member2");
+        em.flush();
+    }
+
+    @Test
+    public void lock() {
+
+        //given
+        Member member1 = new Member("member1", 10);
+        memberRepository.save(member1);
+        //보통 트랜잭션 커밋시점에 flush가 되는데, 강제로 영속성 컨텍스트에 있는 값들을 flush시킬 수 있다.
+        em.flush();
+        //영속성 컨텍스트에 있는 값들을 모두 날린다.
+        em.clear();
+
+        //then
+        List<Member> member11 = memberRepository.findLockByUsername("member1");
+    }
+
+
 }
