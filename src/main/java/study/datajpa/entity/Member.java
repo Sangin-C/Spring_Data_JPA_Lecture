@@ -1,5 +1,6 @@
 package study.datajpa.entity;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import lombok.*;
 import org.springframework.data.jpa.repository.EntityGraph;
 
@@ -13,7 +14,7 @@ import javax.persistence.*;
 @NamedQuery(name = "Member.findByUsername",
         query = "select m from Member m where m.username = :username")
 @NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue
