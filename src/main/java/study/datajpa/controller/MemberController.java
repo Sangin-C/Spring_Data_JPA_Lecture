@@ -12,7 +12,6 @@ import study.datajpa.entity.Member;
 import study.datajpa.repository.MemberRepository;
 
 import javax.annotation.PostConstruct;
-import java.nio.channels.MembershipKey;
 
 @RestController
 @RequiredArgsConstructor
