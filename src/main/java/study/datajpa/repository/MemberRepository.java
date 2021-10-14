@@ -35,7 +35,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
 
     List<Member> findListByUsername(String username);   //컬렉션
 
-    Member findMemberByUsername(String username);       //단건
+    Member findMemberByUsername(String username); //단건
 
     Optional<Member> findOptionalByUsername(String username); //단건 Optional
 
@@ -71,5 +71,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     List<Member> findLockByUsername(String username);
 
+
+    <T> List<T> findProjectionsByUsername(@Param("username") String username, Class<T> type);
 
 }
